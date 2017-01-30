@@ -1,0 +1,9 @@
+name: FireworkShow
+author: iGufGuf
+version: 1.0
+description: 'FireworkShow plugin for plarparks'
+main: com.igufguf.fireworkshow.Main
+commands:
+  fireworkshow:
+    description: Basic fireworkshow command
+    aliases: [fws]
