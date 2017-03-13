@@ -1,7 +1,7 @@
 name: FireworkShow
 author: iGufGuf
-version: 1.0
-description: 'FireworkShow plugin for plarparks'
+version: 1.0.1
+description: 'The best FireworkShow plugin for scheduled and customized firework effects!'
 main: com.igufguf.fireworkshow.Main
 commands:
   fireworkshow:
