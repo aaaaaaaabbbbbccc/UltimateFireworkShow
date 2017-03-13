@@ -39,26 +39,21 @@ public class Show extends ArrayList<Frame> implements ConfigurationSerializable 
         long current = 0;
         for ( final Frame f : this ) {
             current += f.getDelay();
-            int tid = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.main, new Runnable() {
+            taskids.add(Bukkit.getScheduler().scheduleSyncDelayedTask(Main.main, new Runnable() {
                 @Override
                 public void run() {
                     f.play();
                 }
-            }, current);
-
-
-            taskids.add(tid);
-            if ( taskids.size() == this.size() ) {
-                tid = Bukkit.getScheduler().scheduleSyncDelayedTask(Main.main, new Runnable() {
-                    @Override
-                    public void run() {
-                        running = false;
-                        taskids.clear();
-                    }
-                }, current);
-                taskids.add(tid);
-            }
+            }, current));
         }
+
+        taskids.add(Bukkit.getScheduler().scheduleSyncDelayedTask(Main.main, new Runnable() {
+            @Override
+            public void run() {
+                running = false;
+                taskids.clear();
+            }
+        }, current));
     }
 
     public void stop() {
@@ -69,6 +64,9 @@ public class Show extends ArrayList<Frame> implements ConfigurationSerializable 
         }
     }
 
+    public boolean isRunning() {
+        return running;
+    }
 
     @Override
     public Map<String, Object> serialize() {

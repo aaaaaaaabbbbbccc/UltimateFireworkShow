@@ -42,9 +42,9 @@ import java.util.HashMap;
  **/
 public class Main extends JavaPlugin {
 
-    public static HashMap<String, Show> shows = new HashMap<String, Show>();
+    private static final HashMap<String, Show> shows = new HashMap<>();
 
-    public static FileConfiguration showsfile = new YamlConfiguration();
+    private static FileConfiguration showsfile = new YamlConfiguration();
     public static Main main;
 
     @Override
@@ -85,8 +85,23 @@ public class Main extends JavaPlugin {
             return true;
         }
 
-        if ( args.length == 2 && args[0].equalsIgnoreCase("play")) {
-            if ( sender instanceof Player && !sender.hasPermission("fireworkshow.play")) {
+        if ( args.length == 0 || (args.length == 1 && args[0].equals("help")) ) {
+            sender.sendMessage(ChatColor.GREEN + "/fws create <showname>" + ChatColor.GRAY + " Create a new fireworkshow");
+            sender.sendMessage(ChatColor.GREEN + "/fws delete <showname>" + ChatColor.GRAY + " Delete a fireworkshow");
+            sender.sendMessage(ChatColor.GREEN + "/fws addframe <showname> <delay>" + ChatColor.GRAY + " Add a frame to a show");
+            sender.sendMessage(ChatColor.GREEN + "/fws delframe <showname> <frameid>" + ChatColor.GRAY + " Delete a frame from a show");
+            sender.sendMessage(ChatColor.GREEN + "/fws dupframe <showname> <frameid>" + ChatColor.GRAY + " Duplicate a frame from a show");
+            sender.sendMessage(ChatColor.GREEN + "/fws newfw <showname> (<frameid>)" + ChatColor.GRAY + " Set a firework on your location for a show");
+            sender.sendMessage(ChatColor.GREEN + "/fws play <showname>" + ChatColor.GRAY + " Start a fireworkshow");
+        }
+
+        if ( args[0].equalsIgnoreCase("play")) {
+            if ( args.length < 2 ) {
+                sender.sendMessage(ChatColor.RED + "Invalid arguments, you should try " + ChatColor.DARK_RED + "/" + cmd.getName() + " play <showname>");
+                return true;
+            }
+
+            if ( sender instanceof Player && !sender.hasPermission("fireworkshow.stop")) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
                 return true;
             }
@@ -96,8 +111,46 @@ public class Main extends JavaPlugin {
                 return true;
             }
 
-            shows.get(args[1].toLowerCase()).play();
-            sender.sendMessage(ChatColor.GREEN + "You just started fireworkshow " + ChatColor.DARK_GREEN + args[1].toLowerCase() + ChatColor.GREEN + "!");
+            Show show = shows.get(args[1].toLowerCase());
+
+            if ( show.isRunning() ) {
+                sender.sendMessage(ChatColor.GREEN + "ireworkshow " + ChatColor.DARK_GREEN + args[1].toLowerCase() + ChatColor.GREEN + " is already running!");
+                return true;
+            }
+
+            show.play();
+            sender.sendMessage(ChatColor.GREEN + "You started fireworkshow " + ChatColor.DARK_GREEN + args[1].toLowerCase() + ChatColor.GREEN + "!");
+            return true;
+        }
+
+        if ( args[0].equalsIgnoreCase("stop")) {
+            if ( args.length != 2 ) {
+                sender.sendMessage(ChatColor.RED + "Invalid arguments, you should try " + ChatColor.DARK_RED + "/" + cmd.getName() + " stop <showname>");
+                return true;
+            }
+
+            if ( sender instanceof Player && !sender.hasPermission("fireworkshow.play")) {
+                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                return true;
+            }
+
+            if ( args[1].equalsIgnoreCase("all") ) {
+                for ( Show show : shows.values() ) {
+                    show.stop();
+                }
+
+                sender.sendMessage(ChatColor.GREEN + "You stopped all fireworkshows!");
+                return true;
+            }
+
+            if ( !shows.containsKey(args[1].toLowerCase()) ) {
+                sender.sendMessage(ChatColor.RED + "That fireworkshow does not exist!");
+                return true;
+            }
+
+            shows.get(args[1].toLowerCase()).stop();
+            sender.sendMessage(ChatColor.GREEN + "You stopped fireworkshow " + ChatColor.DARK_GREEN + args[1].toLowerCase() + ChatColor.GREEN + "!");
+            return true;
         }
 
         if ( !(sender instanceof Player) ) {
@@ -105,7 +158,12 @@ public class Main extends JavaPlugin {
             return true;
         }
 
-        if ( args.length == 2 && args[0].equalsIgnoreCase("create") ) {
+        if ( args[0].equalsIgnoreCase("create") ) {
+            if ( args.length != 2 ) {
+                sender.sendMessage(ChatColor.RED + "Invalid arguments, you should try " + ChatColor.DARK_RED + "/" + cmd.getName() + " create <showname>");
+                return true;
+            }
+
             if ( !sender.hasPermission("fireworkshow.create") ) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
                 return true;
@@ -121,7 +179,12 @@ public class Main extends JavaPlugin {
             shows.put(name, new Show());
             showsfile.set(name, shows.get(name));
             sender.sendMessage(ChatColor.GREEN + "You created a fireworkshow with name " + ChatColor.DARK_GREEN + name + ChatColor.GREEN + "!");
-        } else if ( args.length == 2 && args[0].equalsIgnoreCase("delete") ) {
+        } else if ( args[0].equalsIgnoreCase("delete") ) {
+            if ( args.length != 2 ) {
+                sender.sendMessage(ChatColor.RED + "Invalid arguments, you should try " + ChatColor.DARK_RED + "/" + cmd.getName() + " delete <showname>");
+                return true;
+            }
+
             if ( !sender.hasPermission("fireworkshow.delete") ) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
                 return true;
@@ -136,7 +199,12 @@ public class Main extends JavaPlugin {
             shows.remove(name);
             showsfile.set(name, null);
             sender.sendMessage(ChatColor.GREEN + "You deleted the fireworkshow with name " + ChatColor.DARK_GREEN + name + ChatColor.GREEN + "!");
-        } else if ( args.length == 3 && args[0].equalsIgnoreCase("addframe") ) {
+        } else if ( args[0].equalsIgnoreCase("addframe") ) {
+            if ( args.length != 3 ) {
+                sender.sendMessage(ChatColor.RED + "Invalid arguments, you should try " + ChatColor.DARK_RED + "/" + cmd.getName() + " addframe <showname> <delay>");
+                return true;
+            }
+
             if ( !sender.hasPermission("fireworkshow.addframe") ) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
                 return true;
@@ -163,7 +231,12 @@ public class Main extends JavaPlugin {
             showsfile.set(name, shows.get(name));
             sender.sendMessage(ChatColor.GREEN + "You added a new frame (#" + ChatColor.YELLOW + shows.get(name).size() + ChatColor.GREEN + ") " +
                     "to the firworkshow with name " + ChatColor.DARK_GREEN + name + ChatColor.GREEN + "!");
-        } else if ( args.length == 3 && args[0].equalsIgnoreCase("delframe") ) {
+        } else if ( args[0].equalsIgnoreCase("delframe") ) {
+            if ( args.length != 3 ) {
+                sender.sendMessage(ChatColor.RED + "Invalid arguments, you should try " + ChatColor.DARK_RED + "/" + cmd.getName() + " delframe <showname> <frameid>");
+                return true;
+            }
+
             if ( !sender.hasPermission("fireworkshow.delframe") ) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
                 return true;
@@ -184,7 +257,12 @@ public class Main extends JavaPlugin {
             shows.get(name).remove(frame-1);
             showsfile.set(name, shows.get(name));
             sender.sendMessage(ChatColor.GREEN + "You removed a frame from the fireworkshow with name" + ChatColor.DARK_GREEN + name + ChatColor.GREEN + "!");
-        } else if ( args.length == 3 && args[0].equalsIgnoreCase("dupframe") ) {
+        } else if ( args[0].equalsIgnoreCase("dupframe") ) {
+            if ( args.length != 3 ) {
+                sender.sendMessage(ChatColor.RED + "Invalid arguments, you should try " + ChatColor.DARK_RED + "/" + cmd.getName() + " dupframe <showname> <frameid>");
+                return true;
+            }
+
             if ( !sender.hasPermission("fireworkshow.dupframe") ) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
                 return true;
@@ -207,7 +285,12 @@ public class Main extends JavaPlugin {
             showsfile.set(name, shows.get(name));
             sender.sendMessage(ChatColor.GREEN + "You duplicated a frame (#" + ChatColor.YELLOW + shows.get(name).size() + ChatColor.GREEN + ") " +
                     "from the fireworkshow with name " + ChatColor.DARK_GREEN + name + ChatColor.GREEN + "!");
-        } else if ( args.length >= 1 && args[0].equalsIgnoreCase("newfw") ) {
+        } else if ( args[0].equalsIgnoreCase("newfw") ) {
+            if ( args.length < 2 ) {
+                sender.sendMessage(ChatColor.RED + "Invalid arguments, you should try " + ChatColor.DARK_RED + "/" + cmd.getName() + " newfw <showname>");
+                return true;
+            }
+
             if ( !sender.hasPermission("fireworkshow.newfw") ) {
                 sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
                 return true;
@@ -219,41 +302,29 @@ public class Main extends JavaPlugin {
                 return true;
             }
 
-            if ( args.length >= 2 ) {
-
-                int frame = shows.get(name).size();
-                if ( args.length == 2 ) {
-                    if ( !args[2].matches("[0-9]+") ||shows.get(name).size() < Integer.valueOf(args[2]) ) {
-                        sender.sendMessage(ChatColor.RED + "That frame does not exists!");
-                        return true;
-                    }
-                    frame = Integer.valueOf(args[2]);
-                }
-
-                Player p = (Player) sender;
-                if ( p.getItemInHand() == null || p.getItemInHand().getType() != Material.FIREWORK ) {
-                    sender.sendMessage(ChatColor.RED + "Please hold a firework or firework charge in your hand!");
+            int frame;
+            if ( args.length == 3 ) {
+                if (!args[2].matches("[0-9]+") || shows.get(name).size() < Integer.valueOf(args[2])) {
+                    sender.sendMessage(ChatColor.RED + "That frame does not exists!");
                     return true;
                 }
-                FireworkMeta meta = (FireworkMeta) p.getItemInHand().getItemMeta();
-
-                NormalFireworks nf = new NormalFireworks(meta, p.getLocation());
-                shows.get(name).get(frame-1).add(nf);
-                sender.sendMessage(ChatColor.GREEN + "You added firework to the fireworkshow with name " + ChatColor.DARK_GREEN + name
-                        + ChatColor.GREEN + " on frame (#" + ChatColor.YELLOW + frame + ChatColor.GREEN + ")!");
+                frame = Integer.valueOf(args[2]);
             } else {
-                Player p = (Player) sender;
-                if ( p.getItemInHand() == null || p.getItemInHand().getType() != Material.FIREWORK ) {
-                    sender.sendMessage(ChatColor.RED + "Please hold a firework or firework charge in your hand!");
-                    return true;
-                }
-                FireworkMeta meta = (FireworkMeta) p.getItemInHand().getItemMeta();
-
-                NormalFireworks nf = new NormalFireworks(meta, p.getLocation());
-                shows.get(name).get(shows.get(name).size()-1).add(nf);
-                sender.sendMessage(ChatColor.GREEN + "You added firework to the fireworkshow with name " + ChatColor.DARK_GREEN + name
-                        + ChatColor.GREEN + " on frame (#" + ChatColor.YELLOW + shows.get(name).size() + ChatColor.GREEN + ")!");
+                frame = shows.get(name).size();
             }
+
+            Player p = (Player) sender;
+            if ( p.getItemInHand() == null || p.getItemInHand().getType() != Material.FIREWORK ) {
+                sender.sendMessage(ChatColor.RED + "Please hold a firework or firework charge in your hand!");
+                return true;
+            }
+            FireworkMeta meta = (FireworkMeta) p.getItemInHand().getItemMeta();
+
+            NormalFireworks nf = new NormalFireworks(meta, p.getLocation());
+            shows.get(name).get(frame-1).add(nf);
+            sender.sendMessage(ChatColor.GREEN + "You added firework to the fireworkshow with name " + ChatColor.DARK_GREEN + name
+                    + ChatColor.GREEN + " on frame (#" + ChatColor.YELLOW + frame + ChatColor.GREEN + ")!");
+
             showsfile.set(name, shows.get(name));
         }
 
