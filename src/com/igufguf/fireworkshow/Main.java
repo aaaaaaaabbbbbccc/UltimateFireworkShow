@@ -22,22 +22,22 @@ import java.util.HashMap;
 
 
 /**
- * Copyrighted 2017 iGufGuf
+ * Copyrighted 2017 Galaxy Network
  *
- * This file is part of Ultimate Fireworkshow.
+ * This file is part of ParkFirework.
  *
- * Ultimate Fireworkshow is free software: you can redistribute it and/or modify
+ * ParkFirework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * Ultimate Fireworkshow is distributed in the hope that it will be useful,
+ * ParkFirework is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with Ultimate Fireworkshow.  If not, see http://www.gnu.org/licenses/
+ * along with ParkFirework.  If not, see http://www.gnu.org/licenses/
  *
  **/
 public class Main extends JavaPlugin {
@@ -102,7 +102,7 @@ public class Main extends JavaPlugin {
             }
 
             if ( sender instanceof Player && !sender.hasPermission("fireworkshow.stop")) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                sender.sendMessage(ChatColor.RED + "[ " + ChatColor.ORANGE + "Permissions" + ChatColor.RED + "]" + ChatColor.GRAY + "This requires Permission Rank" + ChatColor.DARK_RED + "OWNER");
                 return true;
             }
 
@@ -130,7 +130,7 @@ public class Main extends JavaPlugin {
             }
 
             if ( sender instanceof Player && !sender.hasPermission("fireworkshow.play")) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                sender.sendMessage(ChatColor.RED + "[ " + ChatColor.ORANGE + "Permissions" + ChatColor.RED + "]" + ChatColor.GRAY + "This requires Permission Rank" + ChatColor.DARK_RED + "OWNER");
                 return true;
             }
 
@@ -165,7 +165,7 @@ public class Main extends JavaPlugin {
             }
 
             if ( !sender.hasPermission("fireworkshow.create") ) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                sender.sendMessage(ChatColor.RED + "[ " + ChatColor.ORANGE + "Permissions" + ChatColor.RED + "]" + ChatColor.GRAY + "This requires Permission Rank" + ChatColor.DARK_RED + "OWNER");
                 return true;
             }
 
@@ -186,7 +186,7 @@ public class Main extends JavaPlugin {
             }
 
             if ( !sender.hasPermission("fireworkshow.delete") ) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                sender.sendMessage(ChatColor.RED + "[ " + ChatColor.ORANGE + "Permissions" + ChatColor.RED + "]" + ChatColor.GRAY + "This requires Permission Rank" + ChatColor.DARK_RED + "OWNER");
                 return true;
             }
             String name = args[1].toLowerCase();
@@ -206,7 +206,7 @@ public class Main extends JavaPlugin {
             }
 
             if ( !sender.hasPermission("fireworkshow.addframe") ) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                sender.sendMessage(ChatColor.RED + "[ " + ChatColor.ORANGE + "Permissions" + ChatColor.RED + "]" + ChatColor.GRAY + "This requires Permission Rank" + ChatColor.DARK_RED + "OWNER");
                 return true;
             }
             String name = args[1].toLowerCase();
@@ -222,8 +222,8 @@ public class Main extends JavaPlugin {
             }
             long delay = Long.valueOf(args[2]);
 
-            if ( delay > 600 ) {
-                sender.sendMessage(ChatColor.RED + "The delay can't be longer than 30 seconds!");
+            if ( delay > 2000 ) {
+                sender.sendMessage(ChatColor.RED + "The delay can't be longer than 900 seconds! If needs to be changed message Shasta.");
                 return true;
             }
 
@@ -238,7 +238,7 @@ public class Main extends JavaPlugin {
             }
 
             if ( !sender.hasPermission("fireworkshow.delframe") ) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                sender.sendMessage(ChatColor.RED + "[ " + ChatColor.ORANGE + "Permissions" + ChatColor.RED + "]" + ChatColor.GRAY + "This requires Permission Rank" + ChatColor.DARK_RED + "OWNER");
                 return true;
             }
             String name = args[1].toLowerCase();
@@ -264,7 +264,7 @@ public class Main extends JavaPlugin {
             }
 
             if ( !sender.hasPermission("fireworkshow.dupframe") ) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                sender.sendMessage(ChatColor.RED + "[ " + ChatColor.ORANGE + "Permissions" + ChatColor.RED + "]" + ChatColor.GRAY + "This requires Permission Rank" + ChatColor.DARK_RED + "OWNER");
                 return true;
             }
             String name = args[1].toLowerCase();
@@ -292,7 +292,7 @@ public class Main extends JavaPlugin {
             }
 
             if ( !sender.hasPermission("fireworkshow.newfw") ) {
-                sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
+                sender.sendMessage(ChatColor.RED + "[ " + ChatColor.ORANGE + "Permissions" + ChatColor.RED + "]" + ChatColor.GRAY + "This requires Permission Rank" + ChatColor.DARK_RED + "OWNER");
                 return true;
             }
             String name = args[1].toLowerCase();
